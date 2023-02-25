@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<style>
+	input[type=number]{
+		width: 4em;
+	}
+	</style>
+</head>
+<body>
+<p>Under Construction</p>
+<p>Settings applied here will eventually affect the input form and reports.</p>
+<div>
+<form onsubmit="return false">
+		<label for="season">FRC Season</label><br>
+		<input type="number" name="season" id="season" min="2023" max = "2028"><br>
+		<label for="eventcode">FRC Event</label><br>
+		<select id="eventcode" name="eventcode">
+                <option value="iacf">Iowa Regional</option>
+                <option value="mokc2">Heartland Regional</option>
+                <option value="mosl">St. Louis Regional</option>
+                <option value="ndgf">Great Northern Regional</option>
+                <option value="wila">Seven Rivers Regional</option>
+                <option value="mndu2">Northern Lights Regional</option>
+            </select><br><br>
+		<input type="submit" name="submit" id="submit"><br>
+</form>
+</div>
+<p>Status indicator to display whether a schedule file exists already</p>
+<p id="status">Status message displayed here.</p>
+
+<script>
+document.getElementById('season').value = 2023;
+document.getElementById('submit').addEventListener("click", function(){
+	console.log('submit click called');
+		if (validateForm()){
+			ajaxInsert();
+		} else {
+			document.getElementById('status').innerHTML = 'Select season and event code.';
+		}
+	});
+
+function validateForm(){
+	var season = document.getElementById('season').value;
+	var eventcode = document.getElementById('eventcode').value;
+	var validated = true;
+	if(season==null||isNaN(season)||eventcode==null||eventcode==""){
+		validated = false;
+	}
+	return validated;
+}
+
+function ajaxInsert(){
+	document.getElementById('status').innerHTML = 'Requesting data from thebluealliance.com...';
+	var season = parseInt(document.getElementById('season').value);
+	var eventcode = document.getElementById('eventcode').value;
+	var postData = 'season='+season+'&eventcode='+eventcode;
+	// console.log(postData);
+	xhr = new XMLHttpRequest();
+	xhr.open('POST', 'getTBAschedule.php');
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xhr.onload = function() {
+	    if (xhr.status === 200) {
+	        document.getElementById('status').innerHTML = 'AJAX call successful.';
+	    }
+	    else if (xhr.status !== 200) {
+	        document.getElementById('status').innerHTML = 'there was an error ' + errorThrown + ' with status ' + status;
+	    }
+	};
+	xhr.send(encodeURI(postData));
+}
+</script>
+
+</body>
+</html>

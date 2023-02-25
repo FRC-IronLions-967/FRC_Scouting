@@ -1,0 +1,25 @@
+html {
+	background-color: #c5170a;
+}
+
+div {
+	background-color: #fbb3ae;
+}
+
+input[type=number] {
+	width: 3em;
+}
+
+textarea {
+	margin-left: 5px;
+}
+
+.yellow {
+	background-color: #ffc;
+	border:  solid 2px yellow;
+}
+
+.purple {
+	background-color: #f5ccff;
+	border:  solid 2px purple;
+}

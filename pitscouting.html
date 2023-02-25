@@ -1,0 +1,380 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Pit Scouting</title>
+	<link rel='stylesheet' href="style.css">
+	<meta name=viewport content="width=device-width">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="eventData.js?v=1"></script>
+	<script src="scheduleData.js?v=1"></script>
+	<script src="teamData.js?v=1"></script>
+	<script>
+		var ctx = false;
+	</script>
+	<style>
+		img {
+			display: block;
+		}
+	</style>
+</head>
+
+<body class="w3-theme-d3">
+<form onsubmit="return false">
+
+<div>
+    <button><strong>Menu</strong></button>
+    <div>
+      	<a href='index.html'>Match Scouting</a>
+		<a href="pitscouting.html">Pit Scouting</a>
+		<a href="report.php">Team Reports</a>
+		<a href="schedule.php">Schedule</a>
+		<a href="schedule967.php">967 Schedule</a>
+		<a href="schedule171.php">171 Schedule</a>
+		<a href="teams.php">Team List</a>
+		<a href="stats.php">Scout Stats</a>
+		<a href="matches.php">Active/Recent</a>
+    </div>
+</div>
+
+<div>
+<h3>Pit Scouting</h3>
+<p class="status"></p>
+<label for="team">Team Number</label><br>
+<select id="team" value = "167" name="team">
+	<option value="167">167</option>
+	<option value="525">525</option>
+	<option value="967">967</option>
+</select><br>
+
+<img src="pics/none.jpg" alt="No picture" id="robot_picture" style='max-width: 300px'>
+<canvas width=300 height = 0 id="canvas"></canvas><br>
+
+<label for="fileToUpload">Select Picture to Upload<br></label><br>
+<em>(Needs to be cropped and resized to less than 500K filesize first)</em><br>
+<em>(Can be done in a separate app such as Pixlr)</em>
+
+<input type="file" onchange="previewPicture();" name="fileToUpload" id="fileToUpload"><br>
+<br>
+<div id="picbox"></div>
+<button id="submitPicture" onclick="uploadPicture();">Upload Image</button><br><br>
+
+<label for="scout_name">Scout Name</label></br>
+<input type="text" name="scout_name" value="" id="scout_name">
+
+</div>
+
+<div>
+<label for="drive_type">Drive Type</label><br>
+<select id="drive_type" value = "skidsteer" name="drive_type">
+	<option value="">???</option>
+	<option value="tank">Skid/Tank/4WD/6WD/8WD</option>
+	<option value="treads">Treads</option>
+	<option value="mecanum">Mecanum</option>
+	<option value="swerve">Swerve</option>
+	<option value="hdrive">H-Drive</option>
+	<option value="omni">Omni/Holonomic</option>
+</select><br>
+<br>
+<label for=""># of Motors in Drive Train</label></br>
+<em>(do not include motors from manipulators)</em></br>
+<button class = "m1" id="m1drive_motors">-1</button>
+<input type="number" value="4" id="drive_motors" name="drive_motors" min="0" max = "8">
+<button class="p1" id="p1drive_motors">+1</button><br>
+<br>
+
+<label for="motors_type">Type of Drive Train Motors</label><br>
+<select id="motors_type">
+	<option value="CIM">CIM</option>
+	<option value="Neo">Neo</option>
+	<option value="Falcon">Falcon 500</option>
+	<option value="775Pro">775Pro</option>
+	<option value="MiniCIM">MiniCIM</option>
+</select><br><br>
+
+<label for="manipulator_A">Score Cubes? (Select Max Height)</label><br>
+<select id="manipulator_A">
+	<option value="">???</option>
+	<option value="Top">Top Cubes</option>
+	<option value="Mid">Middle Cubes</option>
+	<option value="Bot">Bottom Cubes</option>
+</select><br><br>
+
+<label for="manipulator_B">Score Cones?</label><br>
+<select id="manipulator_B">
+		<option value="">???</option>
+	<option value="Top">Top Cones</option>
+	<option value="Mid">Middle Cones</option>
+	<option value="Bot">Bottom Cones</option>
+</select><br><br>
+
+<label for="floor_pickup">Floor Pickup</label><br>
+<select id="floor_pickup">
+	<option value="">???</option>
+	<option value="cubes">Cubes Only</option>
+	<option value="cones">Cones Only</option>
+	<option value="both">Both</option>
+</select><br><br>
+
+<label for="climber">Autonomous Balancing</label><br>
+<select id="climber">
+	<option value="">No (or ???)</option>
+	<option value="">Intending to try</option>
+	<option value="auto_bal">Yes/tested/working</option>
+<select><br><br>
+
+<label for="auto_plan">Autonomous Game Piece Strategy</label><br>
+<select id="auto_plan">
+	<option value="">???</option>
+	<option value="none">None</option>
+	<option value="Preload">Score Preload</option>
+	<option value="Multi">Score Multiple</option>
+</select><br><br>
+
+<label for="tele_plan">TeleOp Plan</label><br>
+<select id="tele_plan">
+	<option value="">???</option>
+	<option value="cycle">Substation Loading</option>
+	<option value="floor">Floor Pickup from Middle</option>
+	<option value="bot">Hybrid (Bottom) scoring</option>
+	<option value="defense">Defense Only</option>
+<select><br><br>
+
+<label for="build_appearance">Build Appearance</label><br>
+<select id="build_appearance" value = "build_average" name="build_appearance">
+	<option value="">Neutral</option>
+	<option value="build_concerns">Concerns Noted</option>
+	<option value="well_built">Well Built</option>
+</select><br>
+<br>
+
+<label for="wiring_appearance">Wiring Appearance</label><br>
+<select id="wiring_appearance" value = "wiring_average" name="wiring_appearance">
+	<option value="">Neutral</option>
+	<option value="wiring_concerns">Concerns Noted</option>
+	<option value="wiring_organized">Well Organized</option>
+</select><br>
+
+<h3>Comments</h3>
+<textarea placeholder="Write Comments Here" name="comments" value="" id="comments" rows="7", cols="40"></textarea><br><br>
+<input type="submit" id="submit" value="Submit" onclick="submitData()"></div>
+<p class="status">Status info will be displayed here.</p>
+</div>
+
+<script>
+function submitData(){
+	status("Starting Request");
+
+	var xhr = new XMLHttpRequest();
+	var params = '';
+
+	params += 'team=' + document.getElementById('team').value;
+	params += '&event_key=' + eventData['key'];
+	params += '&scout_name=' + document.getElementById('scout_name').value;
+	params += '&drive_type=' + document.getElementById('drive_type').value;
+	params += '&drive_motors=' + document.getElementById('drive_motors').value;
+	params += '&motors_type=' + document.getElementById('motors_type').value;
+	params += '&floor_pickup=' + document.getElementById('floor_pickup').value;
+	params += '&climber=' + document.getElementById('climber').value;
+	params += '&manipulator_A=' + document.getElementById('manipulator_A').value;
+	params += '&manipulator_B=' + document.getElementById('manipulator_B').value;
+	params += '&tele_plan=' + document.getElementById('tele_plan').value;
+	params += '&manipulator_A=' + document.getElementById('manipulator_A').value;
+	params += '&manipulator_B=' + document.getElementById('manipulator_B').value;
+	params += '&auto_plan=' + document.getElementById('auto_plan').value;
+	params += '&build_appearance=' + document.getElementById('build_appearance').value;
+	params += '&wiring_appearance=' + document.getElementById('wiring_appearance').value;
+	params += '&comments=' + document.getElementById('comments').value;
+	params += '&picture_filename=' + 'filename.jpg'; // functionality not implemented yet
+
+	xhr.onreadystatechange = function(){
+		if(this.readyState == 4 & this.status == 200){
+			document.getElementsByClassName('status')[0].innerHTML = this.responseText;
+			document.getElementsByClassName('status')[1].innerHTML = this.responseText;
+		}
+	}
+	
+	xhr.open("POST", "insert_pit_record.php", true); 
+	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhr.send(encodeURI(params));
+	status("Sending Request...");	
+}
+
+function status(text){
+	s = document.getElementsByClassName('status');
+	for (var i=0; i < s.length; i++){
+		s[i].innerHTML = text;
+	}
+}
+function updateTeams(arr){
+	var teamList = [];
+		for (i = 0; i < teamData.length; i++){
+			teamList.push({num: parseInt(teamData[i]["team_number"]),
+				nick: teamData[i]["nickname"]});
+		}
+
+	teamList.sort(function comp(a, b){return parseInt(a['num'])-parseInt(b['num'])});
+
+	var choices = '';
+	for(i = 0; i < teamList.length; i++){
+		var num = teamList[i]['num'];
+		var nick = teamList[i]['nick']
+		choices += '<option value="'+num+'">'+num+' - '+nick.substring(0,22)+'</option>\n';
+	}
+	document.getElementById('team').innerHTML = choices;
+}
+
+function lookupTeamData(){
+	status("Starting Request");
+
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function(){
+		if(this.readyState == 4 & this.status == 200){
+			if (xhr.responseText != 'null'){
+				status("Scouting data exists for team " + document.getElementById('team').value);
+
+				var data = JSON.parse(xhr.responseText);
+				document.getElementById('team').value = data['team'];
+				document.getElementById('scout_name').value = data['scout_name'];
+				document.getElementById('drive_type').value = data['drive_type'];
+				document.getElementById('motors_type').value = data['motors_type'];
+				document.getElementById('drive_motors').value = data['drive_motors'];
+				document.getElementById('floor_pickup').value = data['floor_pickup'];
+				document.getElementById('climber').value = data['climber'];
+				document.getElementById('manipulator_A').value = data['manipulator_A'];
+				document.getElementById('manipulator_B').value = data['manipulator_B'];
+				document.getElementById('auto_plan').value = data['auto_plan'];
+				document.getElementById('tele_plan').value = data['tele_plan'];
+				document.getElementById('build_appearance').value = data['build_appearance'];
+				document.getElementById('wiring_appearance').value = data['wiring_appearance'];
+				document.getElementById('comments').value = data['comments'];
+			}
+			else {
+				status("No data yet for team " + document.getElementById('team').value);
+
+				document.getElementById('scout_name').value = "";
+				document.getElementById('drive_type').value = "";
+				document.getElementById('drive_motors').value = 4;
+				document.getElementById('motors_type').value = "CIM";
+				document.getElementById('floor_pickup').value = "";
+				document.getElementById('climber').value = "";
+				document.getElementById('manipulator_A').value = "";
+				document.getElementById('manipulator_B').value = "";
+				document.getElementById('auto_plan').value = "";
+				document.getElementById('tele_plan').value = "";
+				document.getElementById('build_appearance').value = "";
+				document.getElementById('wiring_appearance').value = "";
+				document.getElementById('comments').value = "";
+			}
+		}
+		else{
+			status("Looking for team " + document.getElementById('team').value + " data...");
+		}
+	};
+	xhr.open('GET', 'get_pit.php?team=' + document.getElementById('team').value + '&event_key='+eventData['key']);
+	xhr.send();
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+	//Document ready function
+	ctx = document.getElementById('canvas').getContext("2d");
+	updateTeams(teamData);
+	lookupTeamData();
+	lookupPicture();
+	document.getElementById('team').addEventListener("change", function(){
+		lookupTeamData();
+		lookupPicture();
+		// document.getElementById('robot_picture').src = "pics/"+document.getElementById('team').value+".jpg";
+	});
+});
+
+plus = document.getElementsByClassName('p1');
+for (i=0; i<plus.length; i++){
+	var val_id = plus[i].id.substring(2);
+	plus[i].addEventListener("click",closure(val_id, 1));
+}
+
+minus = document.getElementsByClassName('m1');
+for (i=0; i<minus.length; i++){
+	var val_id = minus[i].id.substring(2);
+	minus[i].addEventListener("click",closure(val_id, -1));
+}
+
+function closure(id, amt){
+	return function(){
+		if ( parseInt(document.getElementById(id).value) + amt >= 0){
+			document.getElementById(id).value = parseInt(document.getElementById(id).value) + amt;
+		}
+	}
+}
+
+function lookupPicture(){
+    var xhr = new XMLHttpRequest();
+    var params = 'team=' + document.getElementById('team').value;
+    console.log(params);
+    xhr.onreadystatechange = function(){
+        if(this.readyState == 4 & this.status == 200){
+        document.getElementById('robot_picture').src = xhr.responseText.trim();
+        //ctx draw
+        }
+    }
+    
+    xhr.open("POST", "get_pic_name.php", true); 
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(encodeURI(params));
+}
+
+function previewPicture(){
+	var file = document.getElementById('fileToUpload').files[0];
+	if(file.type.match(/image.*/)) {
+		// var img = document.createElement("img");
+		// img.src = window.URL.createObjectURL(file);
+		var canvas = document.getElementById('canvas');
+		var ctx = canvas.getContext("2d");
+		var img = document.createElement("img");
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			img.onload = function(e){
+				var width = img.width;
+				var height = img.height;
+				var aspect = width/height;
+				console.log(width+"x"+height+", "+aspect);
+				var w = 300;
+				var h = Math.floor(300/aspect);
+				console.log(w +"x"+h)
+				canvas.width = 300;
+				canvas.height = h;
+				ctx.drawImage(img, 0, 0, w, h);
+			//create file to upload				
+			};
+			img.src = e.target.result;
+		};
+		reader.readAsDataURL(file);
+		// var img_file = document.querySelector('#fileToUpload').files[0];
+		// var img = document.createElement("img");
+		// img.src = window.URL.createObjectURL(img_file);
+		// console.log(img.width+" x "+img.height);
+	}
+}
+var myBlob = false;
+function uploadPicture(){
+	var dataURL = canvas.toDataURL();
+	var data = new FormData();
+	var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'sendpic.php', true);
+    xhr.onload = function() {	
+    	// console.log(xhr.responseText);
+    	canvas.height = 0;
+		lookupPicture();
+
+    };
+	canvas.toBlob(function(blob){
+		data.append('team', document.getElementById('team').value);
+	    data.append('blob', blob);
+	    myBlob = blob;
+	    xhr.send(data);
+	},"image/jpg",0);
+}
+
+</script>
+</body>
+</html>

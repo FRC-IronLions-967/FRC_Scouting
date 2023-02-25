@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Match Scouting</title>
+	<link rel='stylesheet' href="style.css">
+	<link rel="icon" href="logo.ico" type="image/ico" sizes="16x16">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<script src="eventData.js?v=1"></script>
+	<script src="teamData.js?v=1"></script>
+	<script src="scheduleData.js?v=1"></script>
+</head>
+
+<body>      
+<div style="width:100%;">
+    <button><strong>Menu</strong></button>
+    <div style="width:240px;">
+      	<a href='index.html'>Match Scouting</a>
+		<a href="pitscouting.html">Pit Scouting</a>
+		<a href="report.php">Team Reports</a>
+		<a href="schedule.php">Schedule</a>
+		<a href="schedule967.php">967 Schedule</a>
+		<a href="teams.php">Team List</a>
+		<a href="stats.php">Scout Stats</a>
+		<a href="matches.php">Active/Recent</a>
+    </div>
+</div>
+
+<div>
+<h4>Match Scouting</h4>
+<p class="status">Status text will display here</p>   
+<label for="matchnum">Match</label><br>
+<input type="number" name="matchnum" id="matchnum" min="1" max = "150" value="1">
+<label for="practice">Practice?</label>
+<input type="checkbox" name="practice" id="practice"><br><br>
+
+Team Number:<br>
+<select id="team" name="team">
+	<option value=100>100</option>
+	<option value=200>200</option>
+	<option value=300>300</option>
+	<option value=400>400</option>
+	<option value=500>500</option>
+	<option value=600>600</option>
+</select><button id="refreshButton">Refresh Teams</button><br>
+<span id="nickname"></span><br><br>
+
+Scout Name:<br>
+<input type="text" name="scout_name" value="" id="scout_name" onfocusout="activeScout();"><br>
+</div>
+
+<div>
+<h3>Autonomous Period</h3>
+<select id="auto_move">
+	<option value="">Auto Move?</option>
+	<option value="-">Did not move</option>
+	<option value="X">Not far enough</option>
+	<option value="IL">Successfully Exited</option>
+</select><br><br>
+<select id="preload">
+	<option value="">Preload?</option>
+	<option value="cone">cone</option>
+	<option value="cube">cube</option>
+	<option value="-">none</option>
+</select><br><br>
+
+<select id="auto_location">
+	<option value="">Start Location?</option>
+	<option value="left">left</option>
+	<option value="mid">mid</option>
+	<option value="center">center</option>
+</select><br><br>
+
+<select hidden id="auto_action">
+	<option value="">auto action?</option>
+	<option value="ABC">ABC</option>
+	<option value="XYZ">XYZ</option>
+	<option value="none">none</option>
+</select><!-- <br><br> -->
+
+<table class="yellow">
+<tr><th>&#10060;Cones Missed</th><th></th><th>Cones Made&#9989;</th></tr>
+<tr>
+	<td><button id="m1auto_high_missed" class="m1">-1</button>
+	<button id="p1auto_high_missed" class="p1">+1</button>
+	<input type="number" id="auto_high_missed" value=0 min=0 max=99></input></td>
+	<th>Top</th>
+	<td><input type="number" id="auto_high_made" value=0 min=0 max=99></input>
+	<button id="m1auto_high_made" class="m1">-1</button>
+	<button id="p1auto_high_made" class="p1">+1</button></td>
+</tr>
+<tr>
+	<td><button id="m1auto_mid_missed" class="m1">-1</button>
+	<button id="p1auto_mid_missed" class="p1">+1</button>
+	<input type="number" id="auto_mid_missed" value=0 min=0 max=99></input></td>
+	<th>Mid</th>
+	<td><input type="number" id="auto_mid_made" value=0 min=0 max=99></input>
+	<button id="m1auto_mid_made" class="m1">-1</button>
+	<button id="p1auto_mid_made" class="p1">+1</button></td>
+</tr>
+<tr>
+	<td><button id="m1auto_low_missed" class="m1">-1</button>
+	<button id="p1auto_low_missed" class="p1">+1</button>
+	<input type="number" id="auto_low_missed" value=0 min=0 max=99></input></td>
+	<th>Bot</th>
+	<td><input type="number" id="auto_low_made" value=0 min=0 max=99></input>
+	<button id="m1auto_low_made" class="m1">-1</button>
+	<button id="p1auto_low_made" class="p1">+1</button></td>
+</tr>
+</table><br>
+
+<table class="purple">
+<tr><th>&#10060;Cubes Missed</th><th></th><th>Cubes Made&#9989;</th></tr>
+<tr>
+	<td><button id="m1auto_high_missed_B" class="m1">-1</button>
+	<button id="p1auto_high_missed_B" class="p1">+1</button>
+	<input type="number" id="auto_high_missed_B" value=0 min=0 max=99></input></td>
+	<th>Top</th>
+	<td><input type="number" id="auto_high_made_B" value=0 min=0 max=99></input>
+	<button id="m1auto_high_made_B" class="m1">-1</button>
+	<button id="p1auto_high_made_B" class="p1">+1</button></td>
+</tr>
+<tr>
+	<td><button id="m1auto_mid_missed_B" class="m1">-1</button>
+	<button id="p1auto_mid_missed_B" class="p1">+1</button>
+	<input type="number" id="auto_mid_missed_B" value=0 min=0 max=99></input></td>
+	<th>Mid</th>
+	<td><input type="number" id="auto_mid_made_B" value=0 min=0 max=99></input>
+	<button id="m1auto_mid_made_B" class="m1">-1</button>
+	<button id="p1auto_mid_made_B" class="p1">+1</button></td>
+</tr>
+<tr>
+	<td><button id="m1auto_low_missed_B" class="m1">-1</button>
+	<button id="p1auto_low_missed_B" class="p1">+1</button>
+	<input type="number" id="auto_low_missed_B" value=0 min=0 max=99></input></td>
+	<th>Bot</th>
+	<td><input type="number" id="auto_low_made_B" value=0 min=0 max=99></input>
+	<button id="m1auto_low_made_B" class="m1">-1</button>
+	<button id="p1auto_low_made_B" class="p1">+1</button></td>
+</tr>
+</table><br>
+</div>            
+
+<div>
+<h3>Teleoperated Period</h3>
+<table class="yellow">
+<tr><th>&#10060;Cones Missed</th><th></th><th>Cones Made&#9989;</th></tr>
+<tr>
+	<td><button id="m1tele_high_missed" class="m1">-1</button>
+	<button id="p1tele_high_missed" class="p1">+1</button>
+	<input type="number" id="tele_high_missed" value=0 min=0 max=99></input></td>
+	<th>Top</th>
+	<td><input type="number" id="tele_high_made" value=0 min=0 max=99></input>
+	<button id="m1tele_high_made" class="m1">-1</button>
+	<button id="p1tele_high_made" class="p1">+1</button></td>
+</tr>
+<tr>
+	<td><button id="m1tele_mid_missed" class="m1">-1</button>
+	<button id="p1tele_mid_missed" class="p1">+1</button>
+	<input type="number" id="tele_mid_missed" value=0 min=0 max=99></input></td>
+	<th>Mid</th>
+	<td><input type="number" id="tele_mid_made" value=0 min=0 max=99></input>
+	<button id="m1tele_mid_made" class="m1">-1</button>
+	<button id="p1tele_mid_made" class="p1">+1</button></td>
+</tr>
+<tr>
+	<td><button id="m1tele_low_missed" class="m1">-1</button>
+	<button id="p1tele_low_missed" class="p1">+1</button>
+	<input type="number" id="tele_low_missed" value=0 min=0 max=99></input></td>
+	<th>Bot</th>
+	<td><input type="number" id="tele_low_made" value=0 min=0 max=99></input>
+	<button id="m1tele_low_made" class="m1">-1</button>
+	<button id="p1tele_low_made" class="p1">+1</button></td>
+</tr>
+</table><br>
+
+<table class="purple">
+<tr><th>&#10060;Cubes Missed</th><th></th><th>Cubes Made&#9989;</th></tr>
+<tr>
+	<td><button id="m1tele_high_missed_B" class="m1">-1</button>
+	<button id="p1tele_high_missed_B" class="p1">+1</button>
+	<input type="number" id="tele_high_missed_B" value=0 min=0 max=99></input></td>
+	<th>Top</th>
+	<td><input type="number" id="tele_high_made_B" value=0 min=0 max=99></input>
+	<button id="m1tele_high_made_B" class="m1">-1</button>
+	<button id="p1tele_high_made_B" class="p1">+1</button></td>
+</tr>
+<tr>
+	<td><button id="m1tele_mid_missed_B" class="m1">-1</button>
+	<button id="p1tele_mid_missed_B" class="p1">+1</button>
+	<input type="number" id="tele_mid_missed_B" value=0 min=0 max=99></input></td>
+	<th>Mid</th>
+	<td><input type="number" id="tele_mid_made_B" value=0 min=0 max=99></input>
+	<button id="m1tele_mid_made_B" class="m1">-1</button>
+	<button id="p1tele_mid_made_B" class="p1">+1</button></td>
+</tr>
+<tr>
+	<td><button id="m1tele_low_missed_B" class="m1">-1</button>
+	<button id="p1tele_low_missed_B" class="p1">+1</button>
+	<input type="number" id="tele_low_missed_B" value=0 min=0 max=99></input></td>
+	<th>Bot</th>
+	<td><input type="number" id="tele_low_made_B" value=0 min=0 max=99></input>
+	<button id="m1tele_low_made_B" class="m1">-1</button>
+	<button id="p1tele_low_made_B" class="p1">+1</button></td>
+</tr>
+</table><br>
+
+<label for="fouls">Fouls <em>(describe in comments)</em></label><br>
+<button class="m1" id="m1fouls">-1</button>
+<input type="number" id="fouls" value=0 min=0 max=99></input>
+<button class="p1" id="p1fouls">+1</button><br><br>
+
+<!-- <label for="human_feeder">Used Human Feeder?</label><br> -->
+<select id="human_feeder">
+	<option value="-">Substation not used</option>
+	<option value="Single">single feeder used</option>
+	<option value="Double">double feeder used</option>
+	<option value="Both">both stations used</option>
+</select><br><br>
+
+<!-- <label for="floor_pickup">Floor pickup?</label><br> -->
+<select id="floor_pickup">
+	<option value="-">No floor pickup used</option>
+	<option value="fast">Floor pickup fast</option>
+	<option value="slow">Floor pickup slow</option>
+	<option value="X">Floor pickup unsuccessful</option>
+</select><br>
+
+<label hidden for="tele_action">tele_action</label><br>
+<select hidden id="tele_action">
+	<option value="-">Not Attempted</option>
+	<option value="ABC">ABC</option>
+	<option value="XYZ">XYZ</option>
+	<option value="-">none</option>
+</select><!-- <br><br> -->
+
+<label for="endgame">Balancing</label><br>
+<select id="endgame">
+	<option value="-">Not Attempted</option>
+	<option value="2">Parked</option>
+	<option value="6">Docked</option>
+	<option value="10">Engaged</option>
+	<option value="X">Unsuccessful Attempt</option>
+</select><br><br>
+
+<label for="endgame_B">Type of Balance</label><br>
+<select id="endgame_B">
+	<option value="-">Not Attempted</option>
+	<option value="1">Solo</option>
+	<option value="2">Double</option>
+	<option value="3">Triple</option>
+</select><br><br>
+
+<label for="incapacitated">Incapacitated</label>
+<input type="checkbox" id="incapacitated">
+<em>(Describe in comments)</em>
+<br>
+<br>
+<label for="defense">Defense</label>
+<input type="checkbox" name="defense" id="defense">
+<em>(Describe in comments)</em>
+<br>
+</div>
+
+<div>
+
+<p hidden>
+	<strong>Use comments to say what they did OR list rule #.</strong><br>
+		<strong>G3</strong>: crossing center line in sandstorm<br>
+		<strong>G6</strong>: launching a hatch panel<br>
+		<strong>G9</strong>: two defenders on opponent's side<br>
+		<strong>G10</strong>: extending manipulator on opp's side<br>
+		<strong>G11</strong>: throwing/kicking cargo on opp's side<br>
+		<strong>G13</strong>: touching a robot in its hab zone<br>
+		<strong>G16</strong>: hitting opp's rocket in last 20 sec<br>
+		<strong>G18</strong>: pinning / trapping longer than 5 sec<br>
+		<strong>C8</strong>: forcing opponent to commit a foul<br>
+</p>
+<br>
+</div>
+
+<div>
+<h3>Comments</h3>
+<textarea rows="4" cols="40" placeholder="Insert Comments Here" name="comments" value="" id="comments"></textarea>
+</div>
+
+<input type="submit" value="Submit" id="submit">
+
+<div><p class="status">Status text will display here</p></div>
+<p>.</p>
+<p>.</p>
+<p>.</p>
+<p>.</p>
+<p>.</p>
+<p>.</p>
+
+<script>
+
+plus = document.getElementsByClassName('p1');
+for (i=0; i<plus.length; i++){
+	var val_id = plus[i].id.substring(2);
+	plus[i].addEventListener("click",closure(val_id, 1));
+}
+
+minus = document.getElementsByClassName('m1');
+for (i=0; i<minus.length; i++){
+	var val_id = minus[i].id.substring(2);
+	minus[i].addEventListener("click",closure(val_id, -1));
+}
+
+function closure(id, amt){
+	return function(){
+		if ( parseInt(document.getElementById(id).value) + amt >= 0){
+			document.getElementById(id).value = parseInt(document.getElementById(id).value) + amt;
+		}
+	}
+}
+
+function updateTeams(arr, matchnum){
+	var teamList = [];
+	//add a '0' value to the beginning to avoid letting humans forget to select and default to first in list
+	if(arr.length > 0){
+		for (i = 0; i < arr.length; i++) {
+			if (arr[i]["comp_level"]==="qm"){
+				if(arr[i]["match_number"]==matchnum){
+					var red = arr[i]['alliances']['red']['team_keys'];
+					var blue = arr[i]['alliances']['blue']['team_keys'];
+					teamList.push(parseInt(red[0].slice(3)));
+					teamList.push(parseInt(red[1].slice(3)));
+					teamList.push(parseInt(red[2].slice(3)));
+					teamList.push(parseInt(blue[0].slice(3)));
+					teamList.push(parseInt(blue[1].slice(3)));
+					teamList.push(parseInt(blue[2].slice(3)));
+					break;
+				}
+			}
+		}
+	} else {
+		document.getElementById('practice').checked = true;
+		for (i = 0; i < teamData.length; i++){
+			teamList.push(parseInt(teamData[i]["team_number"]));
+		}
+		teamList.sort(function compareInt(a, b){return parseInt(a)-parseInt(b)});
+	}
+	if (teamList.length == 6){
+		var slots = ['Red 1: ', 'Red 2: ', 'Red 3: ', 'Blue1: ', 'Blue2: ', 'Blue3: '];
+		var choices = '';
+		choices += '<option value=0>Choose Team</option>\n';
+		for(i = 0; i < teamList.length; i++){
+			var team = teamList[i];
+			choices += '<option value='+team+'>'+slots[i]+team+'</option>\n';
+		}			
+	}  
+	else {
+		var choices = '';
+		choices += '<option value=0>Choose Team</option>\n';
+		for(i = 0; i < teamList.length; i++){
+			var team = teamList[i];
+			choices += '<option value='+team+'>'+team+'</option>\n';
+		}			
+	}
+	
+
+	document.getElementById('team').innerHTML = choices;
+}
+
+function updateNickname(arr, teamnum){
+	for (i = 0; i < arr.length; i++){
+		if (arr[i]['team_number']==teamnum){
+			document.getElementById('nickname').innerHTML = arr[i]['nickname'];
+			return;
+		}
+		document.getElementById('nickname').innerHTML = "";
+	}
+}
+
+function validateForm(){
+	var matchnum = document.getElementById('matchnum').value;
+	var team = document.getElementById('team').value;
+	var scout_name = document.getElementById('scout_name').value;
+	var validated = true;
+	if(matchnum==null||isNaN(matchnum)||team==null||team==0||team==""||scout_name==""||scout_name==null||scout_name.length<2){
+		validated = false;
+		// status('Fill out match number, team, and scout name.');
+	}
+	//validate HTML form data
+	//if form input is invalid, validated = false
+	return validated;
+}
+
+function status(m){
+	document.getElementsByClassName('status')[0].innerHTML = m;
+	document.getElementsByClassName('status')[1].innerHTML = m;
+}
+
+function submitData(){
+	status("Starting Request");
+	var xhr = new XMLHttpRequest();
+	var params = '';
+	params += 'event_key=' + eventData['key'];
+	params += '&team=' + document.getElementById('team').value;
+	params += '&scout_name=' + document.getElementById('scout_name').value;
+	
+	params += '&practice='+ (document.getElementById('practice').checked ? 1:0);
+	if (document.getElementById('practice').checked) {
+		//negative numbers for practice matches
+		params += '&matchnum='+ -1*document.getElementById('matchnum').value;
+	}
+	else {
+		params += '&matchnum='+ document.getElementById('matchnum').value;	
+	}
+	params += '&scout_name='+ document.getElementById('scout_name').value;
+	params += '&auto_move='+ document.getElementById('auto_move').value;
+	params += '&preload='+ document.getElementById('preload').value;
+	params += '&auto_location='+ document.getElementById('auto_location').value;
+	params += '&auto_action='+ document.getElementById('auto_action').value;
+	params += '&auto_high_made='+ document.getElementById('auto_high_made').value;
+	params += '&auto_high_missed='+ document.getElementById('auto_high_missed').value;
+	params += '&auto_mid_made='+ document.getElementById('auto_mid_made').value;
+	params += '&auto_mid_missed='+ document.getElementById('auto_mid_missed').value;
+	params += '&auto_low_made='+ document.getElementById('auto_low_made').value;
+	params += '&auto_low_missed='+ document.getElementById('auto_low_missed').value;
+	params += '&auto_high_made_B='+ document.getElementById('auto_high_made_B').value;
+	params += '&auto_high_missed_B='+ document.getElementById('auto_high_missed_B').value;
+	params += '&auto_mid_made_B='+ document.getElementById('auto_mid_made_B').value;
+	params += '&auto_mid_missed_B='+ document.getElementById('auto_mid_missed_B').value;
+	params += '&auto_low_made_B='+ document.getElementById('auto_low_made_B').value;
+	params += '&auto_low_missed_B='+ document.getElementById('auto_low_missed_B').value;
+	params += '&tele_high_made='+ document.getElementById('tele_high_made').value;
+	params += '&tele_high_missed='+ document.getElementById('tele_high_missed').value;
+	params += '&tele_mid_made='+ document.getElementById('tele_mid_made').value;
+	params += '&tele_mid_missed='+ document.getElementById('tele_mid_missed').value;
+	params += '&tele_low_made='+ document.getElementById('tele_low_made').value;
+	params += '&tele_low_missed='+ document.getElementById('tele_low_missed').value;
+	params += '&tele_high_made_B='+ document.getElementById('tele_high_made_B').value;
+	params += '&tele_high_missed_B='+ document.getElementById('tele_high_missed_B').value;
+	params += '&tele_mid_made_B='+ document.getElementById('tele_mid_made_B').value;
+	params += '&tele_mid_missed_B='+ document.getElementById('tele_mid_missed_B').value;
+	params += '&tele_low_made_B='+ document.getElementById('tele_low_made_B').value;
+	params += '&tele_low_missed_B='+ document.getElementById('tele_low_missed_B').value;
+	params += '&fouls='+ document.getElementById('fouls').value;
+	params += '&tele_action='+ document.getElementById('tele_action').value;
+	params += '&human_feeder='+ document.getElementById('human_feeder').value;
+	params += '&floor_pickup='+ document.getElementById('floor_pickup').value;
+	params += '&endgame='+ document.getElementById('endgame').value;
+	params += '&endgame_B='+ document.getElementById('endgame_B').value;
+	params += '&comments='+ document.getElementById('comments').value;
+	// handle checkboxes differently
+	params += '&defense='+ (document.getElementById('defense').checked ? 1:0);
+	params += '&incapacitated='+ (document.getElementById('incapacitated').checked ? 1:0);
+
+
+	xhr.onreadystatechange = function(){
+		if(this.readyState == 4 & this.status == 200){
+			status(this.responseText);
+			if (this.responseText.substr(this.responseText.length - 13) == "successfully."){
+				clearData();
+				document.getElementById('team').value=0;
+				document.getElementById('matchnum').value = parseInt(document.getElementById('matchnum').value) + 1;
+				updateTeams(scheduleData, document.getElementById('matchnum').value);
+			}
+		}
+	}
+	
+	xhr.open("POST", "insert_match.php", true); 
+	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhr.send(encodeURI(params));
+	status("Sending Data...");
+}
+
+function clearData(){
+	document.getElementById('scout_name').value="";
+	document.getElementById('auto_move').value="";
+	document.getElementById('preload').value="";
+	document.getElementById('auto_location').value="";
+	document.getElementById('auto_action').value="";
+	document.getElementById('auto_high_made').value=0;
+	document.getElementById('auto_high_missed').value=0;
+	document.getElementById('auto_mid_made').value=0;
+	document.getElementById('auto_mid_missed').value=0;
+	document.getElementById('auto_low_made').value=0;
+	document.getElementById('auto_low_missed').value=0;
+	document.getElementById('auto_high_made_B').value=0;
+	document.getElementById('auto_high_missed_B').value=0;
+	document.getElementById('auto_mid_made_B').value=0;
+	document.getElementById('auto_mid_missed_B').value=0;
+	document.getElementById('auto_low_made_B').value=0;
+	document.getElementById('auto_low_missed_B').value=0;
+	document.getElementById('tele_high_made').value=0;
+	document.getElementById('tele_high_missed').value=0;
+	document.getElementById('tele_mid_made').value=0;
+	document.getElementById('tele_mid_missed').value=0;
+	document.getElementById('tele_low_made').value=0;
+	document.getElementById('tele_low_missed').value=0;
+	document.getElementById('tele_high_made_B').value=0;
+	document.getElementById('tele_high_missed_B').value=0;
+	document.getElementById('tele_mid_made_B').value=0;
+	document.getElementById('tele_mid_missed_B').value=0;
+	document.getElementById('tele_low_made_B').value=0;
+	document.getElementById('tele_low_missed_B').value=0;
+	document.getElementById('fouls').value=0;
+	document.getElementById('tele_action').value="";
+	document.getElementById('human_feeder').value="";
+	document.getElementById('floor_pickup').value="";
+	document.getElementById('endgame').value="";
+	document.getElementById('endgame_B').value="";
+	document.getElementById('defense').checked=false;
+	document.getElementById('incapacitated').checked=false;
+	document.getElementById('comments').value="";
+	updateNickname(teamData, document.getElementById('team').value);
+}
+
+function lookupMatchData(){
+	status("Starting Request");
+
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function(){
+		if(this.readyState == 4 & this.status == 200){
+			if (xhr.responseText != 'null'){
+				status("Found data for Match "+document.getElementById('matchnum').value +" team " + document.getElementById('team').value + " event " + eventData['key']);
+
+				var data = JSON.parse(xhr.responseText);
+				document.getElementById('scout_name').value = data['scout_name'];
+				document.getElementById('auto_move').value = data['auto_move'];
+				document.getElementById('preload').value = data['preload'];
+				document.getElementById('auto_location').value = data['auto_location'];
+				document.getElementById('auto_action').value = data['auto_action'];
+				document.getElementById('auto_high_made').value = data['auto_high_made'];
+				document.getElementById('auto_high_missed').value = data['auto_high_missed'];
+				document.getElementById('auto_mid_made').value = data['auto_mid_made'];
+				document.getElementById('auto_mid_missed').value = data['auto_mid_missed'];
+				document.getElementById('auto_low_made').value = data['auto_low_made'];
+				document.getElementById('auto_low_missed').value = data['auto_low_missed'];
+				document.getElementById('auto_high_made_B').value = data['auto_high_made_B'];
+				document.getElementById('auto_high_missed_B').value = data['auto_high_missed_B'];
+				document.getElementById('auto_mid_made_B').value = data['auto_mid_made_B'];
+				document.getElementById('auto_mid_missed_B').value = data['auto_mid_missed_B'];
+				document.getElementById('auto_low_made_B').value = data['auto_low_made_B'];
+				document.getElementById('auto_low_missed_B').value = data['auto_low_missed_B'];
+				document.getElementById('tele_high_made').value = data['tele_high_made'];
+				document.getElementById('tele_high_missed').value = data['tele_high_missed'];
+				document.getElementById('tele_mid_made').value = data['tele_mid_made'];
+				document.getElementById('tele_mid_missed').value = data['tele_mid_missed'];
+				document.getElementById('tele_low_made').value = data['tele_low_made'];
+				document.getElementById('tele_low_missed').value = data['tele_low_missed'];
+				document.getElementById('tele_high_made_B').value = data['tele_high_made_B'];
+				document.getElementById('tele_high_missed_B').value = data['tele_high_missed_B'];
+				document.getElementById('tele_mid_made_B').value = data['tele_mid_made_B'];
+				document.getElementById('tele_mid_missed_B').value = data['tele_mid_missed_B'];
+				document.getElementById('tele_low_made_B').value = data['tele_low_made_B'];
+				document.getElementById('tele_low_missed_B').value = data['tele_low_missed_B'];
+				document.getElementById('fouls').value = data['fouls'];
+				document.getElementById('tele_action').value = data['tele_action'];
+				document.getElementById('human_feeder').value = data['human_feeder'];
+				document.getElementById('floor_pickup').value = data['floor_pickup'];
+				document.getElementById('endgame').value = data['endgame'];
+				document.getElementById('endgame_B').value = data['endgame_B'];
+				document.getElementById('comments').value = data['comments'];
+				document.getElementById('defense').checked = !! + data['defense'];
+				document.getElementById('incapacitated').checked = !! + data['incapacitated'];
+			}
+			else {
+				status("No data for Match "+document.getElementById('matchnum').value +" team " + document.getElementById('team').value);
+				//document.getElementById('scout_name').value = "";
+				clearData();
+			}
+		}
+		else{
+			status("Looking for Match "+document.getElementById('matchnum').value +" team " + document.getElementById('team').value);
+		}
+	};
+	xhr.open('GET', 'get_match.php?team=' + document.getElementById('team').value + '&matchnum='+document.getElementById('matchnum').value + '&event_key=' + eventData['key']);
+	xhr.send();
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+	//Document ready function
+	updateTeams(scheduleData, document.getElementById('matchnum').value);
+
+	document.getElementById('matchnum').addEventListener("change", function(){
+		updateTeams(scheduleData, document.getElementById('matchnum').value);
+	});
+
+	document.getElementById('team').addEventListener("change", function(){
+		updateNickname(teamData, document.getElementById('team').value);
+		lookupMatchData();
+
+	});
+
+	document.getElementById('submit').addEventListener("click", function(){
+		if (validateForm()){
+			submitData();
+		}
+		else {
+			status("Form data incomplete - needs match number, team, and scout name.");
+		}
+	});
+	document.getElementById('refreshButton').addEventListener("click", function(){
+		updateTeams(scheduleData, document.getElementById('matchnum').value);
+	});
+
+
+});
+
+function activeScout(){
+	// currently not an active feature
+
+	// if(validateForm()){
+	// 	var xhr = new XMLHttpRequest();
+	// 	var params = 'team=' + document.getElementById('team').value;
+	// 	params += '&scout_name=' + document.getElementById('scout_name').value;
+	// 	if (document.getElementById('practice').checked) {
+	// 	//negative numbers for practice matches
+	// 	params += '&matchnum='+ -1*document.getElementById('matchnum').value;
+	// 	}
+	// 	else {
+	// 		params += '&matchnum='+ document.getElementById('matchnum').value;	
+	// 	}
+	// 	console.log(params);
+	// 	xhr.open("POST", "activescout.php", true); 
+	// 	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	// 	// xhr.onload= function() {
+	// 	// 	console.log("Response: "+ this.responseText);
+	// 	// };
+	// 	xhr.send(encodeURI(params));
+	// }
+}
+
+</script>
+
+</body>
+</html>

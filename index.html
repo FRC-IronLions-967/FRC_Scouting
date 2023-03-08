@@ -64,17 +64,18 @@ Scout Name:<br>
 
 <select id="auto_location">
 	<option value="">Start Location?</option>
-	<option value="left">left</option>
-	<option value="mid">mid</option>
-	<option value="center">center</option>
+	<option value="left">Near Substation</option>
+	<option value="mid">Middle</option>
+	<option value="center">Far from Substation</option>
 </select><br><br>
 
-<select hidden id="auto_action">
-	<option value="">auto action?</option>
-	<option value="ABC">ABC</option>
-	<option value="XYZ">XYZ</option>
-	<option value="none">none</option>
-</select><!-- <br><br> -->
+<label for="auto_action">Auto Balancing</label>
+<select id="auto_action">
+	<option value="-">Not attempted</option>
+	<option value="X">Unsuccessful</option>
+	<option value="8">Docked (not balanced)</option>
+	<option value="12">Engaged (Balanced)</option>
+</select>
 
 <table class="yellow">
 <tr><th>&#10060;Cones Missed</th><th></th><th>Cones Made&#9989;</th></tr>
@@ -216,21 +217,21 @@ Scout Name:<br>
 	<option value="Both">both stations used</option>
 </select><br><br>
 
-<label for="floor_pickup">Floor Pickup</label><br>
+<label for="floor_pickup">Floor Pickup - Cones</label><br>
 <select id="floor_pickup">
-	<option value="-">No floor pickup used</option>
+	<option value="-">Not attempted</option>
 	<option value="fast">Floor pickup fast</option>
 	<option value="slow">Floor pickup slow</option>
 	<option value="X">Floor pickup unsuccessful</option>
 </select><br>
 
-<label hidden for="tele_action">tele_action</label><br>
-<select hidden id="tele_action">
+<label for="tele_action">Floor Pickup - Cubes</label><br>
+<select id="tele_action">
 	<option value="-">Not Attempted</option>
-	<option value="ABC">ABC</option>
-	<option value="XYZ">XYZ</option>
-	<option value="-">none</option>
-</select><!-- <br><br> -->
+	<option value="fast">Floor pickup fast</option>
+	<option value="slow">Floor pickup slow</option>
+	<option value="X">Floor pickup unsuccessful</option>
+</select>
 
 <label for="endgame">Balancing</label><br>
 <select id="endgame">

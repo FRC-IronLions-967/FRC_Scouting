@@ -23,3 +23,29 @@ textarea {
 	background-color: #f5ccff;
 	border:  solid 2px purple;
 }
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #fbb3ae;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: #4d0000;
+  text-align: center;
+  padding: 6px 8px;
+  text-decoration: none;
+  border: 1px solid #4d0000;
+  border-radius: 4px;
+}
+
+li a:hover {
+  background-color: #f66;
+}

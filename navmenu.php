@@ -1,13 +1,36 @@
-<div class="w3-dropdown-hover" style="width:100%;">
-    <button class="w3-btn-block w3-theme-l3 w3-large w3-border w3-border-black w3-text-red w3-round w3-text-white w3-round-xxlarge"><strong>Menu</strong></button>
-    <div class="w3-dropdown-content w3-bar-block w3-border" style="width:240px;">
-      	<a href='index.html' class="w3-button w3-xlarge w3-block w3-red w3-hover-blue w3-bar-item">Match Scouting</a>
-		<a href="pitscouting.html" class="w3-button w3-xlarge w3-block w3-red w3-hover-blue w3-bar-item">Pit Scouting</a>
-		<a href="report.php" class="w3-button w3-xlarge w3-block w3-red w3-hover-blue w3-bar-item">Team Reports</a>
-		<a href="schedule.php" class="w3-button w3-xlarge w3-block w3-red w3-hover-blue w3-bar-item">Schedule</a>
-		<a href="schedule967.php" class="w3-button w3-xlarge w3-block w3-red w3-hover-blue w3-bar-item">967 Schedule</a>
-		<a href="teams.php" class="w3-button w3-xlarge w3-block w3-red w3-hover-blue w3-bar-item">Team List</a>
-		<a href="stats.php" class="w3-button w3-xlarge w3-block w3-red w3-hover-blue w3-bar-item">Scout Stats</a>
-		<a href="matches.php" class="w3-button w3-xlarge w3-block w3-red w3-hover-blue w3-bar-item">Active/Recent</a>
-    </div>
-</div>
+<style>
+ul {
+list-style-type: none;
+margin: 0;
+padding: 0;
+overflow: hidden;
+background-color: #fbb3ae;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: #4d0000;
+  text-align: center;
+  padding: 6px 8px;
+  text-decoration: none;
+  border: 1px solid #4d0000;
+  border-radius: 4px;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+  background-color: #f66;
+}
+</style>
+<ul>
+  	<li><a href='index.html'>Match</a></li>
+	<li><a href="pitscouting.html">Pit</a></li>
+	<li><a href="schedule.php">Sched</a></li>
+	<li><a href="team_schedule.php?team=967">967 Sched</a></li>
+	<li><a href="teams.php">Teams</a></li>
+	<li><a href="report.php">Report</a></li>
+</ul>

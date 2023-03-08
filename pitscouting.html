@@ -15,24 +15,53 @@
 		img {
 			display: block;
 		}
+		.m1, .p1 {
+			font-size: 1.35em;
+		}
+		input[type="number"]{
+			font-size: 1.15em;
+			width: 2.5em;
+		}
+		ul {
+		  list-style-type: none;
+		  margin: 0;
+		  padding: 0;
+		  overflow: hidden;
+		  background-color: #fbb3ae;
+		}
+
+		li {
+		  float: left;
+		}
+
+		li a {
+		  display: block;
+		  color: #4d0000;
+		  text-align: center;
+		  padding: 6px 8px;
+		  text-decoration: none;
+		  border: 1px solid #4d0000;
+		  border-radius: 4px;
+		}
+
+		/* Change the link color to #111 (black) on hover */
+		li a:hover {
+		  background-color: #f66;
+		}
 	</style>
 </head>
 
 <body class="w3-theme-d3">
 <form onsubmit="return false">
 
-<div>
-    <button><strong>Menu</strong></button>
-    <div>
-      	<a href='index.html'>Match Scouting</a>
-		<a href="pitscouting.html">Pit Scouting</a>
-		<a href="report.php">Team Reports</a>
-		<a href="schedule.php">Schedule</a>
-		<a href="teams.php">Team List</a>
-		<!-- <a href="stats.php">Scout Stats</a> -->
-		<a href="matches.php">Active/Recent</a>
-    </div>
-</div>
+<ul>
+  	<li><a href='index.html'>Match</a></li>
+	<li><a href="pitscouting.html">Pit</a></li>
+	<li><a href="schedule.php">Sched</a></li>
+	<li><a href="team_schedule.php?team=967">967 Sched</a></li>
+	<li><a href="teams.php">Teams</a></li>
+	<li><a href="report.php">Report</a></li>
+</ul>
 
 <div>
 <h3>Pit Scouting</h3>
@@ -108,6 +137,7 @@
 <label for="floor_pickup">Floor Pickup</label><br>
 <select id="floor_pickup">
 	<option value="">???</option>
+	<option value="none">None</option>
 	<option value="cubes">Cubes Only</option>
 	<option value="cones">Cones Only</option>
 	<option value="both">Both</option>

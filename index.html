@@ -8,21 +8,60 @@
 	<script src="eventData.js?v=1"></script>
 	<script src="teamData.js?v=1"></script>
 	<script src="scheduleData.js?v=1"></script>
+
+	<style>
+		.m1, .p1 {
+			font-size: 1.35em;
+		}
+		input[type="number"]{
+			font-size: 1.15em;
+			width: 2.5em;
+		}
+		ul {
+		  list-style-type: none;
+		  margin: 0;
+		  padding: 0;
+		  overflow: hidden;
+		  background-color: #fbb3ae;
+		}
+
+		li {
+		  float: left;
+		}
+
+		li a {
+		  display: block;
+		  color: #4d0000;
+		  text-align: center;
+		  padding: 6px 8px;
+		  text-decoration: none;
+		  border: 1px solid #4d0000;
+		  border-radius: 4px;
+		}
+
+		/* Change the link color to #111 (black) on hover */
+		li a:hover {
+		  background-color: #f66;
+		}
+
+		.cycle {
+			min-width: 12em;
+			text-align: center;
+			font-size: 1.2em;
+		}
+
+	</style>
 </head>
 
 <body>      
-<div style="width:100%;">
-    <button><strong>Menu</strong></button>
-    <div style="width:240px;">
-      	<a href='index.html'>Match Scouting</a>
-		<a href="pitscouting.html">Pit Scouting</a>
-		<a href="report.php">Team Reports</a>
-		<a href="schedule.php">Schedule</a>
-		<a href="teams.php">Team List</a>
-		<!-- <a href="stats.php">Scout Stats</a> -->
-		<!-- <a href="matches.php">Active/Recent</a> -->
-    </div>
-</div>
+    <ul>
+      	<li><a href='index.html'>Match</a></li>
+		<li><a href="pitscouting.html">Pit</a></li>
+		<li><a href="schedule.php">Sched</a></li>
+		<li><a href="team_schedule.php?team=967">967 Sched</a></li>
+		<li><a href="teams.php">Teams</a></li>
+		<li><a href="report.php">Report</a></li>
+    </ul>
 
 <div>
 <h4>Match Scouting</h4>
@@ -49,61 +88,97 @@ Scout Name:<br>
 
 <div>
 <h3>Autonomous Period</h3>
-<select id="auto_move">
-	<option value="">Auto Move?</option>
-	<option value="-">Did not move</option>
-	<option value="X">Not far enough</option>
-	<option value="IL">Successfully Exited</option>
-</select><br><br>
+
+<!-- <label for="auto_location">Start Location</label><br> -->
+<!-- <select id="auto_location">
+	<option value="">Start Location???</option>
+	<option value="near">Near Substation</option>
+	<option value="mid">Middle</option>
+	<option value="far">Far from Substation</option>
+</select><br><br> -->
+
+<button id="auto_location" class="cycle" value="">Auto Location???</button><br><br>
+<script>
+	function updateCycler(id, value){
+		var cycler = document.getElementById(id);
+		cycler.value = value;
+		if (cycler.values.indexOf(value) < 0){
+			cycler.innerHTML = cycler.hint;
+		}
+		else {
+			cycler.innerHTML = cycler.displays[cycler.values.indexOf(value)];
+		}
+	}
+
+	function addCycleListener(id){
+		document.getElementById(id).addEventListener("click", function(){
+			var b1 = document.getElementById(id);
+			var displays = b1.displays;
+			var values = b1.values;
+			if (values.indexOf(b1.value) < 0){
+				b1.value = values[0];
+				b1.innerHTML = displays[0];
+			}
+			else {
+				var newIndex = (values.indexOf(b1.value)+1) % values.length;
+				b1.value = values[newIndex];
+				b1.innerHTML = displays[newIndex];
+			}
+		});
+	}
+
+	document.getElementById('auto_location').displays = ["Near Substation", "Middle", "Far from Substation"];
+	document.getElementById('auto_location').values = ["near", "mid", "far"];
+	document.getElementById('auto_location').hint = "Auto Location???";
+	addCycleListener("auto_location");
+</script>
+
+<!-- <label for="preload">Preload Game Piece</label><br>
 <select id="preload">
-	<option value="">Preload?</option>
+	<option value="">Preload ???</option>
+	<option value="-">none</option>
 	<option value="cone">cone</option>
 	<option value="cube">cube</option>
-	<option value="-">none</option>
-</select><br><br>
+</select><br><br> -->
 
-<select id="auto_location">
-	<option value="">Start Location?</option>
-	<option value="left">Near Substation</option>
-	<option value="mid">Middle</option>
-	<option value="center">Far from Substation</option>
-</select><br><br>
+<button id="preload" class="cycle" value="">Preload???</button><br><br>
+<script>
+	document.getElementById('preload').displays = ["Cube", "Cone", "No Preload"];
+	document.getElementById('preload').values = ["cube", "cone", "none"];
+	document.getElementById('preload').hint = "Preload???";
+	addCycleListener("preload"); 
 
-<label for="auto_action">Auto Balancing</label>
-<select id="auto_action">
-	<option value="-">Not attempted</option>
-	<option value="X">Unsuccessful</option>
-	<option value="8">Docked (not balanced)</option>
-	<option value="12">Engaged (Balanced)</option>
-</select>
+</script>
+
+
 
 <table class="yellow">
 <tr><th>&#10060;Cones Missed</th><th></th><th>Cones Made&#9989;</th></tr>
 <tr>
-	<td><button id="m1auto_high_missed" class="m1">-1</button>
+	<td><button id="m1auto_high_missed" class="m1">&minus;1</button>
 	<button id="p1auto_high_missed" class="p1">+1</button>
 	<input type="number" id="auto_high_missed" value=0 min=0 max=99></input></td>
 	<th>Top</th>
 	<td><input type="number" id="auto_high_made" value=0 min=0 max=99></input>
-	<button id="m1auto_high_made" class="m1">-1</button>
+	<button id="m1auto_high_made" class="m1">&minus;1</button>
 	<button id="p1auto_high_made" class="p1">+1</button></td>
 </tr>
 <tr>
-	<td><button id="m1auto_mid_missed" class="m1">-1</button>
+	<td><button id="m1auto_mid_missed" class="m1">&minus;1</button>
 	<button id="p1auto_mid_missed" class="p1">+1</button>
 	<input type="number" id="auto_mid_missed" value=0 min=0 max=99></input></td>
 	<th>Mid</th>
 	<td><input type="number" id="auto_mid_made" value=0 min=0 max=99></input>
-	<button id="m1auto_mid_made" class="m1">-1</button>
+	<button id="m1auto_mid_made" class="m1">&minus;1</button>
 	<button id="p1auto_mid_made" class="p1">+1</button></td>
 </tr>
 <tr>
-	<td><button id="m1auto_low_missed" class="m1">-1</button>
+	<td><button id="m1auto_low_missed" class="m1">&minus;1</button>
 	<button id="p1auto_low_missed" class="p1">+1</button>
 	<input type="number" id="auto_low_missed" value=0 min=0 max=99></input></td>
 	<th>Bot</th>
 	<td><input type="number" id="auto_low_made" value=0 min=0 max=99></input>
-	<button id="m1auto_low_made" class="m1">-1</button>
+	<button id="m1auto_low_made" class="m1">&minus;1</button>
 	<button id="p1auto_low_made" class="p1">+1</button></td>
 </tr>
 </table><br>
@@ -111,33 +186,51 @@ Scout Name:<br>
 <table class="purple">
 <tr><th>&#10060;Cubes Missed</th><th></th><th>Cubes Made&#9989;</th></tr>
 <tr>
-	<td><button id="m1auto_high_missed_B" class="m1">-1</button>
+	<td><button id="m1auto_high_missed_B" class="m1">&minus;1</button>
 	<button id="p1auto_high_missed_B" class="p1">+1</button>
 	<input type="number" id="auto_high_missed_B" value=0 min=0 max=99></input></td>
 	<th>Top</th>
 	<td><input type="number" id="auto_high_made_B" value=0 min=0 max=99></input>
-	<button id="m1auto_high_made_B" class="m1">-1</button>
+	<button id="m1auto_high_made_B" class="m1">&minus;1</button>
 	<button id="p1auto_high_made_B" class="p1">+1</button></td>
 </tr>
 <tr>
-	<td><button id="m1auto_mid_missed_B" class="m1">-1</button>
+	<td><button id="m1auto_mid_missed_B" class="m1">&minus;1</button>
 	<button id="p1auto_mid_missed_B" class="p1">+1</button>
 	<input type="number" id="auto_mid_missed_B" value=0 min=0 max=99></input></td>
 	<th>Mid</th>
 	<td><input type="number" id="auto_mid_made_B" value=0 min=0 max=99></input>
-	<button id="m1auto_mid_made_B" class="m1">-1</button>
+	<button id="m1auto_mid_made_B" class="m1">&minus;1</button>
 	<button id="p1auto_mid_made_B" class="p1">+1</button></td>
 </tr>
 <tr>
-	<td><button id="m1auto_low_missed_B" class="m1">-1</button>
+	<td><button id="m1auto_low_missed_B" class="m1">&minus;1</button>
 	<button id="p1auto_low_missed_B" class="p1">+1</button>
 	<input type="number" id="auto_low_missed_B" value=0 min=0 max=99></input></td>
 	<th>Bot</th>
 	<td><input type="number" id="auto_low_made_B" value=0 min=0 max=99></input>
-	<button id="m1auto_low_made_B" class="m1">-1</button>
+	<button id="m1auto_low_made_B" class="m1">&minus;1</button>
 	<button id="p1auto_low_made_B" class="p1">+1</button></td>
 </tr>
 </table><br>
+
+<label for="auto_move">Auto Mobility</label><br>
+<select id="auto_move">
+	<option value="">Auto Mobility???</option>
+	<option value="-">Mobility Not attempted</option>
+	<option value="X">Mobility Unsuccessful</option>
+	<option value="3">Successful Mobility</option>
+</select><br><br>
+
+<label for="auto_action">Auto Balancing</label><br>
+<select id="auto_action">
+	<option value="">???</option>
+	<option value="-">Not attempted</option>
+	<option value="X">Unsuccessful</option>
+	<option value="D">Docked (not balanced)</option>
+	<option value="E">Engaged (Balanced)</option>
+</select><br><br>
+
 </div>            
 
 <div>
@@ -145,30 +238,30 @@ Scout Name:<br>
 <table class="yellow">
 <tr><th>&#10060;Cones Missed</th><th></th><th>Cones Made&#9989;</th></tr>
 <tr>
-	<td><button id="m1tele_high_missed" class="m1">-1</button>
+	<td><button id="m1tele_high_missed" class="m1">&minus;1</button>
 	<button id="p1tele_high_missed" class="p1">+1</button>
 	<input type="number" id="tele_high_missed" value=0 min=0 max=99></input></td>
 	<th>Top</th>
 	<td><input type="number" id="tele_high_made" value=0 min=0 max=99></input>
-	<button id="m1tele_high_made" class="m1">-1</button>
+	<button id="m1tele_high_made" class="m1">&minus;1</button>
 	<button id="p1tele_high_made" class="p1">+1</button></td>
 </tr>
 <tr>
-	<td><button id="m1tele_mid_missed" class="m1">-1</button>
+	<td><button id="m1tele_mid_missed" class="m1">&minus;1</button>
 	<button id="p1tele_mid_missed" class="p1">+1</button>
 	<input type="number" id="tele_mid_missed" value=0 min=0 max=99></input></td>
 	<th>Mid</th>
 	<td><input type="number" id="tele_mid_made" value=0 min=0 max=99></input>
-	<button id="m1tele_mid_made" class="m1">-1</button>
+	<button id="m1tele_mid_made" class="m1">&minus;1</button>
 	<button id="p1tele_mid_made" class="p1">+1</button></td>
 </tr>
 <tr>
-	<td><button id="m1tele_low_missed" class="m1">-1</button>
+	<td><button id="m1tele_low_missed" class="m1">&minus;1</button>
 	<button id="p1tele_low_missed" class="p1">+1</button>
 	<input type="number" id="tele_low_missed" value=0 min=0 max=99></input></td>
 	<th>Bot</th>
 	<td><input type="number" id="tele_low_made" value=0 min=0 max=99></input>
-	<button id="m1tele_low_made" class="m1">-1</button>
+	<button id="m1tele_low_made" class="m1">&minus;1</button>
 	<button id="p1tele_low_made" class="p1">+1</button></td>
 </tr>
 </table><br>
@@ -176,30 +269,30 @@ Scout Name:<br>
 <table class="purple">
 <tr><th>&#10060;Cubes Missed</th><th></th><th>Cubes Made&#9989;</th></tr>
 <tr>
-	<td><button id="m1tele_high_missed_B" class="m1">-1</button>
+	<td><button id="m1tele_high_missed_B" class="m1">&minus;1</button>
 	<button id="p1tele_high_missed_B" class="p1">+1</button>
 	<input type="number" id="tele_high_missed_B" value=0 min=0 max=99></input></td>
 	<th>Top</th>
 	<td><input type="number" id="tele_high_made_B" value=0 min=0 max=99></input>
-	<button id="m1tele_high_made_B" class="m1">-1</button>
+	<button id="m1tele_high_made_B" class="m1">&minus;1</button>
 	<button id="p1tele_high_made_B" class="p1">+1</button></td>
 </tr>
 <tr>
-	<td><button id="m1tele_mid_missed_B" class="m1">-1</button>
+	<td><button id="m1tele_mid_missed_B" class="m1">&minus;1</button>
 	<button id="p1tele_mid_missed_B" class="p1">+1</button>
 	<input type="number" id="tele_mid_missed_B" value=0 min=0 max=99></input></td>
 	<th>Mid</th>
 	<td><input type="number" id="tele_mid_made_B" value=0 min=0 max=99></input>
-	<button id="m1tele_mid_made_B" class="m1">-1</button>
+	<button id="m1tele_mid_made_B" class="m1">&minus;1</button>
 	<button id="p1tele_mid_made_B" class="p1">+1</button></td>
 </tr>
 <tr>
-	<td><button id="m1tele_low_missed_B" class="m1">-1</button>
+	<td><button id="m1tele_low_missed_B" class="m1">&minus;1</button>
 	<button id="p1tele_low_missed_B" class="p1">+1</button>
 	<input type="number" id="tele_low_missed_B" value=0 min=0 max=99></input></td>
 	<th>Bot</th>
 	<td><input type="number" id="tele_low_made_B" value=0 min=0 max=99></input>
-	<button id="m1tele_low_made_B" class="m1">-1</button>
+	<button id="m1tele_low_made_B" class="m1">&minus;1</button>
 	<button id="p1tele_low_made_B" class="p1">+1</button></td>
 </tr>
 </table><br>
@@ -211,10 +304,10 @@ Scout Name:<br>
 
 <label for="human_feeder">Substations (Human Feeding)</label><br>
 <select id="human_feeder">
-	<option value="-">Substation not used</option>
-	<option value="Single">single feeder used</option>
-	<option value="Double">double feeder used</option>
-	<option value="Both">both stations used</option>
+	<option value="--">Substation not used</option>
+	<option value="1-">single feeder used</option>
+	<option value="-2">double feeder used</option>
+	<option value="12">both stations used</option>
 </select><br><br>
 
 <label for="floor_pickup">Floor Pickup - Cones</label><br>
@@ -223,7 +316,7 @@ Scout Name:<br>
 	<option value="fast">Floor pickup fast</option>
 	<option value="slow">Floor pickup slow</option>
 	<option value="X">Floor pickup unsuccessful</option>
-</select><br>
+</select><br><br>
 
 <label for="tele_action">Floor Pickup - Cubes</label><br>
 <select id="tele_action">
@@ -231,23 +324,23 @@ Scout Name:<br>
 	<option value="fast">Floor pickup fast</option>
 	<option value="slow">Floor pickup slow</option>
 	<option value="X">Floor pickup unsuccessful</option>
-</select>
+</select><br><br>
 
 <label for="endgame">Balancing</label><br>
 <select id="endgame">
 	<option value="-">Not Attempted</option>
-	<option value="2">Parked</option>
-	<option value="6">Docked</option>
-	<option value="10">Engaged</option>
+	<option value="P">Parked</option>
+	<option value="D">Docked</option>
+	<option value="E">Engaged</option>
 	<option value="X">Unsuccessful Attempt</option>
 </select><br><br>
 
 <label for="endgame_B">Type of Balance</label><br>
 <select id="endgame_B">
-	<option value="-">Not Attempted</option>
-	<option value="1">Solo</option>
-	<option value="2">Double</option>
-	<option value="3">Triple</option>
+	<option value="">Not Attempted</option>
+	<option value="-1">Solo</option>
+	<option value="-2">Double</option>
+	<option value="-3">Triple</option>
 </select><br><br>
 
 <label for="incapacitated">Incapacitated</label>
@@ -452,7 +545,7 @@ function submitData(){
 	xhr.onreadystatechange = function(){
 		if(this.readyState == 4 & this.status == 200){
 			status(this.responseText);
-			if (this.responseText.substr(this.responseText.length - 13) == "successfully."){
+			if (this.responseText.indexOf('saved successfully') >= 0){
 				clearData();
 				document.getElementById('team').value=0;
 				document.getElementById('matchnum').value = parseInt(document.getElementById('matchnum').value) + 1;
@@ -470,8 +563,10 @@ function submitData(){
 function clearData(){
 	document.getElementById('scout_name').value="";
 	document.getElementById('auto_move').value="";
-	document.getElementById('preload').value="";
-	document.getElementById('auto_location').value="";
+	// document.getElementById('auto_location').value="";
+	updateCycler('auto_location', "");
+	// document.getElementById('preload').value="";
+	updateCycler('preload', "");
 	document.getElementById('auto_action').value="";
 	document.getElementById('auto_high_made').value=0;
 	document.getElementById('auto_high_missed').value=0;
@@ -521,8 +616,10 @@ function lookupMatchData(){
 				var data = JSON.parse(xhr.responseText);
 				document.getElementById('scout_name').value = data['scout_name'];
 				document.getElementById('auto_move').value = data['auto_move'];
-				document.getElementById('preload').value = data['preload'];
-				document.getElementById('auto_location').value = data['auto_location'];
+				// document.getElementById('auto_location').value = data['auto_location'];
+				updateCycler('auto_location', data['auto_location']);
+				// document.getElementById('preload').value = data['preload'];
+				updateCycler('preload', data['preload']);
 				document.getElementById('auto_action').value = data['auto_action'];
 				document.getElementById('auto_high_made').value = data['auto_high_made'];
 				document.getElementById('auto_high_missed').value = data['auto_high_missed'];

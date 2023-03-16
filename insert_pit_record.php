@@ -1,6 +1,7 @@
 <?php
 // ini_set('display_errors', 'On');
 // error_reporting(E_ALL | E_STRICT);
+header ('Cache-Control: no-cache');
 require_once 'db.php';
 $team = trim(mysqli_real_escape_string($conn, $_POST['team']));
 $event_key = trim(mysqli_real_escape_string($conn, $_POST['event_key']));
@@ -22,7 +23,16 @@ $picture_filename = trim(mysqli_real_escape_string($conn, $_POST['picture_filena
 $fields = "team,event_key,scout_name,drive_type,motors_type,drive_motors,floor_pickup,climber,manipulator_A,manipulator_B,auto_plan,tele_plan,build_appearance,wiring_appearance,comments,picture_filename";
 $values = "'$team','$event_key','$scout_name','$drive_type','$motors_type','$drive_motors','$floor_pickup','$climber','$manipulator_A','$manipulator_B','$auto_plan','$tele_plan','$build_appearance','$wiring_appearance','$comments','$picture_filename'";
 
-$sql="REPLACE INTO pit ($fields) VALUES ($values)";
+$sql="DELETE FROM pit WHERE team=$team AND event_key='$event_key'";
+
+if(mysqli_query($conn, $sql)){
+	echo "Deleted old record.<br>";
+} 
+else {
+	echo "<br>Error:<br>".$sql."<br>".mysqli_error($conn);
+}
+
+$sql="INSERT INTO pit ($fields) VALUES ($values)";
 
 if(mysqli_query($conn, $sql)){
 	echo "Pit Scouting record saved successfully.";

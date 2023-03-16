@@ -176,7 +176,6 @@ function lookupMatchData(){
             at += "<th>Pre</th>";
             at += "</tr>";
             
-
             var tt = "";
             tt += "<table>";
             // header category row

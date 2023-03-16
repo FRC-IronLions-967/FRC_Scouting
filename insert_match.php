@@ -1,6 +1,5 @@
 <?php
-// ini_set('display_errors', 'On');
-// error_reporting(E_ALL | E_STRICT);
+header ('Cache-Control: no-cache');
 require_once 'db.php';
 
 try{
@@ -65,7 +64,16 @@ mysqli_query($conn, $sql);
 $sql="INSERT INTO matches ($fields) VALUES ($values)";
 
 if(mysqli_query($conn, $sql)){
-	echo "Match $matchnum, Team $team saved successfully.";
+	echo "Match $matchnum, Team $team saved successfully.<br>";
+	$curl = curl_init();
+	$event_key = $_POST['event_key'];
+	$url = "https://www.your_domain_name_here.com/calculate_stats.php?team=$team&event_key=$event_key";
+	echo $url . '<br>';
+	curl_setopt($curl, CURLOPT_URL, $url);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+	$result = curl_exec($curl);
+	echo $result;
+	curl_close($curl);
 } 
 else {
 	echo mysqli_error($conn)."\n".$sql;

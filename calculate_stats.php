@@ -2,9 +2,12 @@
 header ('Cache-Control: no-cache');
 require_once('db.php');
 $team = $_GET['team'];
-$event_key = $_GET['event_key'];
-$sql = "SELECT * FROM matches WHERE team={$_GET['team']} AND event_key='{$_GET['event_key']}' AND matchnum > 0 ORDER BY matchnum";
+$event_key = trim(mysqli_real_escape_string($conn, $_GET['event_key']));
+$sql = "SELECT * FROM matches WHERE team={$_GET['team']} AND event_key='$event_key' AND matchnum > 0 ORDER BY matchnum";
 $result = mysqli_query($conn,$sql);
+if (mysqli_num_rows($result)==0){
+	die("No results for team $team.");
+}
 $matches = [];
 $totals = [];
 $averages = [];
@@ -23,10 +26,12 @@ $averages['auto_move'] = 0;
 $auto_action_values = array( 'E'=>12, 'D'=>8, 'X'=>0, '-'=>0, ''=>0);
 $totals['auto_action'] = 0;
 $averages['auto_action'] = 0;
+$auto_balance_attempts = 0;
 
 $endgame_values = array( 'E'=>10, 'D'=>6, 'P'=>2, 'X'=>0, '-'=>0, ''=>0);
 $totals['endgame'] = 0;
 $averages['endgame'] = 0;
+$endgame_balance_attempts = 0;
 
 $totals['defense'] = 0;
 $averages['defense'] = 0;
@@ -52,7 +57,9 @@ foreach ($matches as $m){
 	$totals['endgame'] += $endgame_values[$m['endgame']];
 	$totals['defense'] += intval($m['defense']);
 	$totals['incapacitated'] += intval($m['incapacitated']);
-
+	if ($m['auto_action'] == 'E' || $m['auto_action'] == 'D' || $m['auto_action'] == 'X'){
+		$auto_balance_attempts += 1;
+	}
 	$preload[] = $m['preload'];
 	$auto_location[] = $m['auto_location'];
 	$human_feeder[] = $m['human_feeder'];
@@ -153,22 +160,38 @@ else {
 
 $n = count($matches);
 foreach ($numeric_keys as $k){
-	$averages[$k] = round(100*$totals[$k]/$n)/100;
+	$averages[$k] = round(10*$totals[$k]/$n)/10;
 }
-$averages['auto_move'] = round(100*$totals['auto_move']/$n)/100;
-$averages['auto_action'] = round(100*$totals['auto_action']/$n)/100;
-$averages['endgame'] = round(100*$totals['endgame']/$n)/100;
-$averages['defense'] = round(100*$totals['defense']/$n)/100;
-$averages['incapacitated'] = round(100*$totals['incapacitated']/$n)/100;
+$averages['auto_move'] = round(10*$totals['auto_move']/$n)/10;
+// if ($auto_balance_attempts > 0){
+// 	$averages['auto_action'] = round(10*$totals['auto_action']/$auto_balance_attempts)/10;
+// }
+// else {
+// 	$averages['auto_action'] = 0;	
+// }
+$averages['auto_action'] = round(10*$totals['auto_action']/$n)/10;
+
+$averages['endgame'] = round(10*$totals['endgame']/$n)/10;
+$averages['defense'] = round(10*$totals['defense']/$n)/10;
+$averages['incapacitated'] = round(10*$totals['incapacitated']/$n)/10;
 
 // Calculate total box score stats
 // $auto = total autonomous game piece and mobility scoring. Excludes balancing since only one robot can balance. Handled separately.
 $auto_total = $averages['auto_high_made']*6 + $averages['auto_high_made_B']*6 + $averages['auto_mid_made']*4 + $averages['auto_mid_made_B']*4 + $averages['auto_low_made']*3 + $averages['auto_low_made_B']*3 + $averages['auto_move'];
 // $tele = TeleOp game piece scoring total points on average
-$tele_total = $averages['tele_high_made']*6 + $averages['tele_high_made_B']*6 + $averages['tele_mid_made']*4 + $averages['tele_mid_made_B']*4 + $averages['tele_low_made']*3 + $averages['tele_low_made_B']*3;
+$high = $averages['auto_high_made'] + $averages['auto_high_made_B'] + $averages['tele_high_made'] + $averages['tele_high_made_B'];
+$mid = $averages['auto_mid_made'] + $averages['auto_mid_made_B'] + $averages['tele_mid_made'] + $averages['tele_mid_made_B'];
+$low = $averages['auto_low_made'] + $averages['auto_low_made_B'] + $averages['tele_low_made'] + $averages['tele_low_made_B'];
+$link_pts = floor($high/3)*5 + 0.556*($high%3)**2;
+$link_pts += floor($mid/3)*5 + 0.556*($mid%3)**2;
+$link_pts += floor($low/3)*5 + 0.556*($low%3)**2;
+$link_pts = round(10*$link_pts)/10;
+
+$tele_total = $averages['tele_high_made']*6 + $averages['tele_high_made_B']*6 + $averages['tele_mid_made']*4 + $averages['tele_mid_made_B']*4 + $averages['tele_low_made']*3 + $averages['tele_low_made_B']*3 + $link_pts;
+
 $overall_total = $averages['auto_action'] + $auto_total + $tele_total + $averages['endgame'];
 
-$fields = 'team, event_key, auto_high_made ,auto_high_missed ,auto_mid_made ,auto_mid_missed ,auto_low_made ,auto_low_missed ,auto_high_made_B ,auto_high_missed_B ,auto_mid_made_B ,auto_mid_missed_B ,auto_low_made_B ,auto_low_missed_B ,tele_high_made ,tele_high_missed ,tele_mid_made ,tele_mid_missed ,tele_low_made ,tele_low_missed ,tele_high_made_B ,tele_high_missed_B ,tele_mid_made_B ,tele_mid_missed_B ,tele_low_made_B ,tele_low_missed_B ,fouls, auto_move, auto_action, endgame, defense, incapacitated, preload, auto_location, human_feeder, floor_pickup, tele_action, auto_total, tele_total, overall_total';
+$fields = 'team, event_key, auto_high_made ,auto_high_missed ,auto_mid_made ,auto_mid_missed ,auto_low_made ,auto_low_missed ,auto_high_made_B ,auto_high_missed_B ,auto_mid_made_B ,auto_mid_missed_B ,auto_low_made_B ,auto_low_missed_B ,tele_high_made ,tele_high_missed ,tele_mid_made ,tele_mid_missed ,tele_low_made ,tele_low_missed ,tele_high_made_B ,tele_high_missed_B ,tele_mid_made_B ,tele_mid_missed_B ,tele_low_made_B ,tele_low_missed_B ,fouls, auto_move, auto_action, endgame, defense, incapacitated, preload, auto_location, human_feeder, floor_pickup, tele_action, auto_total, tele_total, link_pts, overall_total';
 
 $values_array = [];
 $values_array[] = $team;
@@ -188,8 +211,8 @@ $values_array[] = "'{$averages['floor_pickup']}'";
 $values_array[] = "'{$averages['tele_action']}'";
 $values_array[] = "$auto_total";
 $values_array[] = "$tele_total";
+$values_array[] = "$link_pts";
 $values_array[] = "$overall_total";
-
 
 $values_string = implode(', ', $values_array);
 

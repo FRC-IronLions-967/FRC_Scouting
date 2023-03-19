@@ -27,10 +27,11 @@ li a:hover {
 }
 </style>
 <ul>
-  	<li><a href='index.html'>Match</a></li>
-	<li><a href="pitscouting.html">Pit</a></li>
-	<li><a href="schedule.php">Sched</a></li>
+  	<li><a href='index.html'>Match Scout</a></li>
+	<li><a href="pitscouting.html">Pit Scout</a></li>
+	<li><a href="schedule.php">Schedule</a></li>
 	<li><a href="team_schedule.php?team=967">967 Sched</a></li>
-	<li><a href="teams.php">Teams</a></li>
-	<li><a href="report.php">Report</a></li>
+	<li><a href="teams.php">Team Names</a></li>
+	<li><a href="report.php">Team Reports</a></li>
+  <li><a href="teamstats.php">Team Stats</a></li>
 </ul>
